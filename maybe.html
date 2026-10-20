@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maybe – explore new ideas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f2f4f0; --surface:#ffffff; --ink:#18231f; --muted:#5b6862; --line:#cfd6d0;
+  --accent:#1f4fd8; --accent-ink:#ffffff; --mark:#f3c93a; --mark-ink:#18231f;
+  --display:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  color-scheme:light;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#121a17; --surface:#1b2622; --ink:#eef2ee; --muted:#9aa8a1; --line:#33413b;
+    --accent:#7ea2ff; --accent-ink:#0d1530; --mark:#f3c93a; --mark-ink:#18231f; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121a17; --surface:#1b2622; --ink:#eef2ee; --muted:#9aa8a1; --line:#33413b;
+  --accent:#7ea2ff; --accent-ink:#0d1530; --mark:#f3c93a; --mark-ink:#18231f; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--serif);font-size:1.125rem;line-height:1.6}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
+.logo{font-family:var(--display);font-weight:800;font-size:1.5rem;letter-spacing:-.02em}
+nav a{font-family:var(--display);font-size:.95rem;margin-left:18px;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--line)}
+nav a:hover{border-color:var(--accent)}
+.hero{padding:40px 0 48px}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,8vw,4.6rem);line-height:1;letter-spacing:-.03em;margin:0 0 28px}
+.hero h1 span{background:var(--mark);color:var(--mark-ink);padding:0 .12em}
+.stage{background:var(--surface);border:2px solid var(--ink);padding:26px;border-radius:4px}
+.stage .field{font-family:var(--display);font-size:.9rem;color:var(--muted);margin:0 0 8px}
+.stage .q{font-size:clamp(1.4rem,4vw,2rem);line-height:1.3;margin:0 0 18px;min-height:3.9em}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+button,.btn{font-family:var(--display);font-weight:700;font-size:1rem;border-radius:4px;padding:11px 18px;cursor:pointer;border:2px solid var(--ink);background:var(--surface);color:var(--ink)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button:hover{transform:translateY(-1px)}
+button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+h2{font-family:var(--display);font-weight:800;font-size:1.8rem;letter-spacing:-.02em;margin:56px 0 14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chip{padding:6px 14px;font-size:.95rem;border-width:1px;border-color:var(--line)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.idea{border-top:1px solid var(--line)}
+.idea:last-child{border-bottom:1px solid var(--line)}
+.idea>button.head{all:unset;box-sizing:border-box;display:flex;justify-content:space-between;gap:16px;width:100%;padding:16px 4px;cursor:pointer;font-size:1.2rem}
+.idea>button.head:focus-visible{outline:3px solid var(--accent)}
+.idea .tag{font-family:var(--display);font-size:.85rem;color:var(--muted);white-space:nowrap}
+.idea .more{display:none;padding:0 4px 20px}
+.idea.open .more{display:block}
+.more ul{margin:8px 0 14px;padding-left:20px}
+.more li{margin:4px 0}
+.saved-empty{color:var(--muted)}
+.saved li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.saved ul{list-style:none;padding:0;margin:0}
+.saved button{padding:4px 10px;font-size:.85rem;border-width:1px}
+form{background:var(--surface);border:1px solid var(--line);padding:22px;border-radius:4px;display:grid;gap:14px}
+label{font-family:var(--display);font-weight:700;font-size:.95rem;display:grid;gap:6px}
+input[type=text],select,textarea{font:inherit;font-size:1.05rem;padding:10px;border:1px solid var(--ink);border-radius:4px;background:var(--bg);color:var(--ink);width:100%}
+.agree{display:flex;gap:10px;align-items:flex-start;font-family:var(--serif);font-weight:400;font-size:1rem}
+.agree input{margin-top:6px;width:18px;height:18px;accent-color:var(--accent)}
+.note{font-size:.95rem;color:var(--muted);min-height:1.4em;margin:0}
+footer{margin-top:72px;border-top:2px solid var(--ink);padding:24px 0 40px;font-size:.95rem;color:var(--muted);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+footer button{all:unset;cursor:pointer;color:var(--accent);text-decoration:underline}
+dialog{max-width:640px;width:calc(100% - 32px);border:2px solid var(--ink);border-radius:4px;background:var(--surface);color:var(--ink);padding:0;max-height:85vh}
+dialog::backdrop{background:rgba(10,15,13,.6)}
+.dlg{padding:24px;overflow:auto;max-height:85vh;font-size:1rem}
+.dlg h3{font-family:var(--display);font-size:1.5rem;margin:0 0 4px}
+.dlg h4{font-family:var(--display);margin:18px 0 4px;font-size:1.05rem}
+.dlg p{margin:0 0 6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}button:hover{transform:none}}
+@media (max-width:520px){nav a{margin-left:12px}.idea .tag{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo">Maybe</div>
+    <nav><a href="#browse">Browse</a><a href="#saved">Saved</a><a href="#add">Add yours</a></nav>
+  </header>
+
+  <section class="hero" aria-labelledby="h1">
+    <h1 id="h1">What if <span>nobody</span> had to start from zero?</h1>
+    <div class="stage" aria-live="polite">
+      <p class="field" id="stField"></p>
+      <p class="q" id="stQ"></p>
+      <div class="btns">
+        <button class="primary" id="shuffle">Show another idea</button>
+        <button id="saveCur">Save this idea</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="browse" aria-labelledby="bh">
+    <h2 id="bh">Browse ideas</h2>
+    <div class="chips" id="chips" role="group" aria-label="Filter by field"></div>
+    <div id="list"></div>
+  </section>
+
+  <section id="saved" class="saved" aria-labelledby="sh">
+    <h2 id="sh">Your saved ideas</h2>
+    <p class="saved-empty" id="savedEmpty">Nothing saved yet. Open an idea and choose “Save this idea.”</p>
+    <ul id="savedList"></ul>
+  </section>
+
+  <section id="add" aria-labelledby="ah">
+    <h2 id="ah">Add your own idea</h2>
+    <form id="addForm">
+      <label>Your idea, starting with “What if…”
+        <textarea id="fText" rows="3" maxlength="240" required></textarea>
+      </label>
+      <label>Field
+        <select id="fField"></select>
+      </label>
+      <label class="agree"><input type="checkbox" id="fAgree" required>
+        <span>I have read and agree to the <button type="button" id="openTerms2" style="all:unset;cursor:pointer;color:var(--accent);text-decoration:underline">Terms and Conditions</button>.</span>
+      </label>
+      <div class="btns"><button class="primary" type="submit">Add idea</button></div>
+      <p class="note" id="formNote" role="status"></p>
+    </form>
+  </section>
+
+  <footer>
+    <span>Maybe is a place to think out loud. Ideas here are starting points, not advice.</span>
+    <button id="openTerms">Terms and Conditions</button>
+  </footer>
+</div>
+
+<dialog id="terms" aria-labelledby="tt">
+  <div class="dlg">
+    <h3 id="tt">Terms and Conditions</h3>
+    <p style="color:var(--muted)">Last updated: October 20, 2026</p>
+
+    <h4>1. Acceptance</h4>
+    <p>By using Maybe, or by adding an idea, you agree to these terms. If you do not agree, please do not use the site.</p>
+
+    <h4>2. What Maybe is</h4>
+    <p>Maybe is a tool for exploring ideas. The ideas and prompts shown are for inspiration and discussion only. They are not professional, legal, medical, or financial advice, and we do not promise that any idea is workable, original, or safe to act on.</p>
+
+    <h4>3. Your ideas</h4>
+    <p>You keep ownership of ideas you write. You are responsible for what you add and confirm that it does not infringe anyone’s rights or include confidential information. Because ideas can overlap, we cannot guarantee that no one else has had or will have a similar idea.</p>
+
+    <h4>4. Acceptable use</h4>
+    <p>Do not add content that is unlawful, hateful, harassing, deceptive, or harmful, and do not try to disrupt or misuse the site. We may remove content that breaks these rules.</p>
+
+    <h4>5. Saved data and privacy</h4>
+    <p>Ideas you save or add are stored in your own browser on your device. We do not collect them on a server. Clearing your browser data will delete them.</p>
+
+    <h4>6. No warranty</h4>
+    <p>Maybe is provided “as is” and “as available,” without warranties of any kind. We do not guarantee that the site will be uninterrupted or error-free.</p>
+
+    <h4>7. Limitation of liability</h4>
+    <p>To the extent permitted by law, we are not liable for any loss or damage arising from your use of the site or from acting on any idea found here.</p>
+
+    <h4>8. Changes</h4>
+    <p>We may update these terms from time to time. Continued use after a change means you accept the updated terms.</p>
+
+    <h4>9. Contact</h4>
+    <p>Questions about these terms can be sent to the site owner through the contact details provided where this site is shared.</p>
+
+    <div class="btns" style="margin-top:20px"><button class="primary" id="closeTerms">Close</button></div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  var FIELDS=["Cities","Learning","Health","Work","Food","Energy"];
+  var IDEAS=[
+    {f:"Cities",t:"What if every empty lot became a temporary park until someone built on it?",p:["Who would maintain it for a few months at a time?","What would a park that can be packed up look like?","How would neighbors decide what goes in it?"]},
+    {f:"Cities",t:"What if bus routes were redrawn every season based on where people actually went?",p:["What data would you need, and who owns it?","How would riders learn the new routes?","What would you lose by changing so often?"]},
+    {f:"Learning",t:"What if students graded the questions, not the answers?",p:["What makes a question good?","How would a teacher judge a class’s questions over a term?","Which subjects would change most?"]},
+    {f:"Learning",t:"What if every skill had a public ‘first hour’ that anyone could try for free?",p:["What would the best first hour of cooking contain?","Who would write these hours?","How would you know the hour worked?"]},
+    {f:"Health",t:"What if clinics posted their waiting time the way airports post delays?",p:["Would people choose differently if they knew?","What would clinics need to measure?","What could go wrong with a public number?"]},
+    {f:"Health",t:"What if medicine labels were written with the patient, not for the regulator?",p:["What do patients skip when they read a label?","Could one page replace the leaflet?","How would you test it with real people?"]},
+    {f:"Work",t:"What if teams ended every project by writing what they would skip next time?",p:["Where would these notes live so they get read?","Who would feel safe writing them?","How would a new team find the right one?"]},
+    {f:"Work",t:"What if meetings had to be shorter than the email they replaced?",p:["How would you measure that?","Which meetings truly need a live voice?","What would people do with the saved time?"]},
+    {f:"Food",t:"What if grocery stores sold ‘almost expired’ meals at a fixed, honest price?",p:["How close to expiry is still fine?","Who needs this most?","How do you avoid shoppers waiting for discounts?"]},
+    {f:"Food",t:"What if neighbors shared one big kitchen instead of twelve small ones?",p:["What would a booking system look like?","What would be hardest to share?","What new meals could appear?"]},
+    {f:"Energy",t:"What if a home’s heating followed the cheapest hour of power, not the clock?",p:["How much warmth can a house store?","What would the app need to ask you?","Who benefits if many homes do it at once?"]},
+    {f:"Energy",t:"What if street lamps dimmed to the level of footfall nearby?",p:["How would people feel walking in dimmer light?","What sensor would be cheap enough?","Which streets should never dim?"]}
+  ];
+  var KEY="maybe:v1";
+  var state={filter:"All",saved:[],custom:[],current:null,agreed:false};
+  function load(){try{var r=localStorage.getItem(KEY);if(r){var d=JSON.parse(r);state.saved=d.saved||[];state.custom=d.custom||[];state.agreed=!!d.agreed;}}catch(e){}}
+  function persist(){try{localStorage.setItem(KEY,JSON.stringify({saved:state.saved,custom:state.custom,agreed:state.agreed}));}catch(e){}}
+  function all(){return state.custom.concat(IDEAS);}
+  function $(id){return document.getElementById(id);}
+  function el(tag,cls,txt){var n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n;}
+
+  function showStage(i){
+    state.current=i;
+    $("stField").textContent=i.f;
+    $("stQ").textContent=i.t;
+    updSaveBtn();
+  }
+  function isSaved(t){return state.saved.some(function(s){return s.t===t;});}
+  function updSaveBtn(){var b=$("saveCur");b.textContent=isSaved(state.current.t)?"Saved":"Save this idea";b.disabled=isSaved(state.current.t);}
+  function save(i){if(isSaved(i.t))return;state.saved.unshift({f:i.f,t:i.t});persist();renderSaved();if(state.current)updSaveBtn();}
+  function unsave(t){state.saved=state.saved.filter(function(s){return s.t!==t;});persist();renderSaved();if(state.current)updSaveBtn();}
+
+  function renderChips(){
+    var c=$("chips");c.textContent="";
+    ["All"].concat(FIELDS).forEach(function(f){
+      var b=el("button","chip",f);b.type="button";b.setAttribute("aria-pressed",state.filter===f?"true":"false");
+      b.onclick=function(){state.filter=f;renderChips();renderList();};c.appendChild(b);
+    });
+  }
+  function renderList(){
+    var host=$("list");host.textContent="";
+    all().filter(function(i){return state.filter==="All"||i.f===state.filter;}).forEach(function(i,n){
+      var row=el("div","idea");
+      var h=el("button","head");h.type="button";h.setAttribute("aria-expanded","false");
+      h.appendChild(el("span","",i.t));h.appendChild(el("span","tag",i.f));
+      var more=el("div","more");
+      if(i.p&&i.p.length){more.appendChild(el("p","","Questions to explore:"));var ul=el("ul");i.p.forEach(function(q){ul.appendChild(el("li","",q));});more.appendChild(ul);}
+      else more.appendChild(el("p","","This is your own idea. Where would you start?"));
+      var sb=el("button","",isSaved(i.t)?"Saved":"Save this idea");sb.type="button";sb.disabled=isSaved(i.t);
+      sb.onclick=function(){save(i);sb.textContent="Saved";sb.disabled=true;};
+      more.appendChild(sb);
+      h.onclick=function(){var o=row.classList.toggle("open");h.setAttribute("aria-expanded",o);};
+      row.appendChild(h);row.appendChild(more);host.appendChild(row);
+    });
+    if(!host.children.length)host.appendChild(el("p","saved-empty","No ideas in this field yet. Add the first one below."));
+  }
+  function renderSaved(){
+    var ul=$("savedList");ul.textContent="";
+    $("savedEmpty").style.display=state.saved.length?"none":"block";
+    state.saved.forEach(function(s){
+      var li=el("li");var d=el("span","",s.t+" ("+s.f+")");
+      var b=el("button","","Remove");b.type="button";b.onclick=function(){unsave(s.t);};
+      li.appendChild(d);li.appendChild(b);ul.appendChild(li);
+    });
+  }
+
+  var dlg=$("terms");
+  function openT(){if(dlg.showModal)dlg.showModal();else dlg.setAttribute("open","");}
+  $("openTerms").onclick=openT;$("openTerms2").onclick=openT;
+  $("closeTerms").onclick=function(){dlg.close();};
+
+  $("shuffle").onclick=function(){
+    var a=all(),n;do{n=a[Math.floor(Math.random()*a.length)];}while(a.length>1&&state.current&&n.t===state.current.t);
+    showStage(n);
+  };
+  $("saveCur").onclick=function(){save(state.current);};
+
+  FIELDS.forEach(function(f){var o=el("option","",f);o.value=f;$("fField").appendChild(o);});
+  $("fAgree").checked=false;
+  $("addForm").onsubmit=function(e){
+    e.preventDefault();
+    var txt=$("fText").value.trim(),note=$("formNote");
+    if(!$("fAgree").checked){note.textContent="Please agree to the Terms and Conditions to add an idea.";return;}
+    if(txt.length<10){note.textContent="Write at least a short sentence for your idea.";return;}
+    state.custom.unshift({f:$("fField").value,t:txt});state.agreed=true;persist();
+    $("fText").value="";$("fAgree").checked=false;
+    note.textContent="Idea added. Find it at the top of Browse.";
+    state.filter="All";renderChips();renderList();
+  };
+
+  load();renderChips();renderList();renderSaved();
+  showStage(IDEAS[Math.floor(Math.random()*IDEAS.length)]);
+})();
+</script>
+</body>
+</html>
